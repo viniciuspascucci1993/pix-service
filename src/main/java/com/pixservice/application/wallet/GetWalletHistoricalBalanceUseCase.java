@@ -26,13 +26,16 @@ public class GetWalletHistoricalBalanceUseCase {
         var wallet = walletRepository.findById(walletId)
                 .orElseThrow(() -> new IllegalArgumentException("Wallet not found with ID: " + walletId));
 
-        var historicalBalance = transactionRepository.sumBalanceUntil(walletId, at)
+        Instant adjustedAt = at.plusMillis(999);
+
+        var historicalBalance =
+                transactionRepository.sumBalanceUntil(walletId, adjustedAt)
                 .orElse(BigDecimal.ZERO);
 
         if (historicalBalance.compareTo(BigDecimal.ZERO) == 0) {
             throw new NoTransactionHistoryException(walletId, at.toString());
         }
 
-        return new WalletBalanceHistoricalResponse(wallet.getId(), historicalBalance, at);
+        return new WalletBalanceHistoricalResponse(wallet.getId(), historicalBalance, adjustedAt);
     }
 }

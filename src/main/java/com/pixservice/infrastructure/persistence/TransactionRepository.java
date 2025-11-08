@@ -23,6 +23,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     ), 0)
     FROM Transaction t
     WHERE t.createdAt <= :at
-    """)
+      AND t.status = 'CONFIRMED'
+""")
     Optional<BigDecimal> sumBalanceUntil(@Param("walletId") Long walletId, @Param("at") Instant at);
 }
