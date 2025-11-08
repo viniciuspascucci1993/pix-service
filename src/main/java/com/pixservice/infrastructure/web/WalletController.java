@@ -1,10 +1,8 @@
 package com.pixservice.infrastructure.web;
 
-import com.pixservice.application.dto.CreateWalletRequest;
-import com.pixservice.application.dto.WalletBalanceHistoricalResponse;
-import com.pixservice.application.dto.WalletBalanceResponse;
-import com.pixservice.application.dto.WalletResponse;
+import com.pixservice.application.dto.*;
 import com.pixservice.application.wallet.CreateWalletUseCase;
+import com.pixservice.application.wallet.DepositToWalletUseCase;
 import com.pixservice.application.wallet.GetWalletBalanceUseCase;
 import com.pixservice.application.wallet.GetWalletHistoricalBalanceUseCase;
 import jakarta.validation.Valid;
@@ -19,15 +17,18 @@ public class WalletController {
 
     private final CreateWalletUseCase createWalletUseCase;
     private final GetWalletBalanceUseCase getWalletBalanceUseCase;
-
     private final GetWalletHistoricalBalanceUseCase getWalletHistoricalBalanceUseCase;
+
+    private final DepositToWalletUseCase depositToWalletUseCase;
 
     public WalletController(CreateWalletUseCase createWalletUseCase,
                             GetWalletBalanceUseCase getWalletBalanceUseCase,
-                            GetWalletHistoricalBalanceUseCase getWalletHistoricalBalanceUseCase) {
+                            GetWalletHistoricalBalanceUseCase getWalletHistoricalBalanceUseCase,
+                            DepositToWalletUseCase depositToWalletUseCase) {
         this.createWalletUseCase = createWalletUseCase;
         this.getWalletBalanceUseCase = getWalletBalanceUseCase;
         this.getWalletHistoricalBalanceUseCase = getWalletHistoricalBalanceUseCase;
+        this.depositToWalletUseCase = depositToWalletUseCase;
     }
 
     @PostMapping
@@ -52,6 +53,14 @@ public class WalletController {
                 .execute(walletId, at);
 
         return ResponseEntity.ok(response);
+    }
 
+    @PostMapping("/{walletId}/deposit")
+    public ResponseEntity<DepositResponse> deposit(
+            @PathVariable("walletId") Long walletId,
+            @Valid @RequestBody DepositRequest request
+    ) {
+        DepositResponse depositResponse = depositToWalletUseCase.execute(walletId, request);
+        return ResponseEntity.ok(depositResponse);
     }
 }
