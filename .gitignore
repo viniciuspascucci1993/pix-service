@@ -1,0 +1,17 @@
+# Build / IDE
+target/
+out/
+.idea/
+*.iml
+
+# Logs
+*.log
+
+# Environment
+.env
+*.env
+application-*.yml
+
+# OS
+.DS_Store
+Thumbs.db
