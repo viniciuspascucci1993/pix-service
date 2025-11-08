@@ -1,10 +1,7 @@
 package com.pixservice.infrastructure.web;
 
 import com.pixservice.application.dto.*;
-import com.pixservice.application.wallet.CreateWalletUseCase;
-import com.pixservice.application.wallet.DepositToWalletUseCase;
-import com.pixservice.application.wallet.GetWalletBalanceUseCase;
-import com.pixservice.application.wallet.GetWalletHistoricalBalanceUseCase;
+import com.pixservice.application.wallet.*;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,17 +15,19 @@ public class WalletController {
     private final CreateWalletUseCase createWalletUseCase;
     private final GetWalletBalanceUseCase getWalletBalanceUseCase;
     private final GetWalletHistoricalBalanceUseCase getWalletHistoricalBalanceUseCase;
-
     private final DepositToWalletUseCase depositToWalletUseCase;
+    private final WithdrawFromWalletUseCase withdrawFromWalletUseCase;
 
     public WalletController(CreateWalletUseCase createWalletUseCase,
                             GetWalletBalanceUseCase getWalletBalanceUseCase,
                             GetWalletHistoricalBalanceUseCase getWalletHistoricalBalanceUseCase,
-                            DepositToWalletUseCase depositToWalletUseCase) {
+                            DepositToWalletUseCase depositToWalletUseCase,
+                            WithdrawFromWalletUseCase withdrawFromWalletUseCase) {
         this.createWalletUseCase = createWalletUseCase;
         this.getWalletBalanceUseCase = getWalletBalanceUseCase;
         this.getWalletHistoricalBalanceUseCase = getWalletHistoricalBalanceUseCase;
         this.depositToWalletUseCase = depositToWalletUseCase;
+        this.withdrawFromWalletUseCase = withdrawFromWalletUseCase;
     }
 
     @PostMapping
@@ -62,5 +61,14 @@ public class WalletController {
     ) {
         DepositResponse depositResponse = depositToWalletUseCase.execute(walletId, request);
         return ResponseEntity.ok(depositResponse);
+    }
+
+    @PostMapping("/{walletId}/withdraw")
+    public ResponseEntity<WithdrawResponse> withdraw(
+            @PathVariable("walletId") Long walletId,
+            @RequestBody WithdrawRequest request
+    ) {
+        WithdrawResponse withdrawResponse =  withdrawFromWalletUseCase.execute(walletId, request);
+        return ResponseEntity.ok(withdrawResponse);
     }
 }
