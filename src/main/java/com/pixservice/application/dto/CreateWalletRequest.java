@@ -1,0 +1,7 @@
+package com.pixservice.application.dto;
+
+import jakarta.validation.constraints.NotBlank;
+
+public record CreateWalletRequest(
+        @NotBlank String ownerName
+) {}
