@@ -1,5 +1,6 @@
 package com.pixservice.domain;
 
+import com.pixservice.domain.enums.PixKeyType;
 import jakarta.persistence.*;
 
 import java.time.Instant;
@@ -18,7 +19,8 @@ public class PixKey {
     private String keyValue; // valor da chave pix
 
     @Column(nullable = false)
-    private String keyType; // tipo da chave
+    @Enumerated(EnumType.STRING)
+    private PixKeyType keyType; // tipo da chave
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "wallet_id", nullable = false)
@@ -29,7 +31,7 @@ public class PixKey {
 
     public PixKey() { }
 
-    public PixKey(Long id, String keyValue, String keyType, Wallet wallet, Instant createdAt) {
+    public PixKey(Long id, String keyValue, PixKeyType keyType, Wallet wallet, Instant createdAt) {
         this.id = id;
         this.keyValue = keyValue;
         this.keyType = keyType;
@@ -53,11 +55,11 @@ public class PixKey {
         this.keyValue = keyValue;
     }
 
-    public String getKeyType() {
+    public PixKeyType getKeyType() {
         return keyType;
     }
 
-    public void setKeyType(String keyType) {
+    public void setKeyType(PixKeyType keyType) {
         this.keyType = keyType;
     }
 
