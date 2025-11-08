@@ -71,4 +71,5 @@ public class WalletController {
         WithdrawResponse withdrawResponse =  withdrawFromWalletUseCase.execute(walletId, request);
         return ResponseEntity.ok(withdrawResponse);
     }
+
 }
