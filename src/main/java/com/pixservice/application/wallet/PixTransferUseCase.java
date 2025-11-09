@@ -42,16 +42,6 @@ public class PixTransferUseCase {
     @Transactional
     public PixTransferResponse execute(String idempotencyKey, PixTransferRequest request) {
 
-        // VERIFICA A IDEMPOTENCIA
-        var existing = idempotencyRepository.findByKeyValue(idempotencyKey);
-        if (existing.isPresent()) {
-            try {
-                return objectMapper.readValue(existing.get().getResponseBody(), PixTransferResponse.class);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException("Error parsing stored response", e);
-            }
-        }
-
         // BUSCA CARTEIRAS
         var fromWallet = walletRepository.findById(request.fromWalletId())
                 .orElseThrow(() -> new IllegalArgumentException("Wallet not found with ID: " + request.fromWalletId()));
@@ -60,6 +50,16 @@ public class PixTransferUseCase {
                 .orElseThrow(() -> new IllegalArgumentException("Pix key not found: " + request.toPixKey()));
 
         var toWallet = toPixKey.getWallet();
+
+        // Verifica idempotência POR carteira
+        var existing = idempotencyRepository.findByWalletIdAndKeyValue(fromWallet.getId(), idempotencyKey);
+        if (existing.isPresent()) {
+            try {
+                return objectMapper.readValue(existing.get().getResponseBody(), PixTransferResponse.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException("Error parsing stored response", e);
+            }
+        }
 
         // VALIDAR SALDO
         if (fromWallet.getBalance().compareTo(request.amount()) < 0) {
@@ -86,7 +86,7 @@ public class PixTransferUseCase {
 
         try {
             var serialized = objectMapper.writeValueAsString(response);
-            idempotencyRepository.save(new IdempotencyKey(idempotencyKey, serialized));
+            idempotencyRepository.save(new IdempotencyKey(fromWallet.getId(), idempotencyKey, serialized));
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Error saving idempotent response", e);
         }

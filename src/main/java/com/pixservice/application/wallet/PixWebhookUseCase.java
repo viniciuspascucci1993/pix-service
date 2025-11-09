@@ -25,15 +25,17 @@ public class PixWebhookUseCase {
     @Transactional
     public void execute(String endToEndId, String eventId, String eventType, Instant occurredAt) {
 
-        // Idempotência: se já existe, não preciso processar novamente
-        Optional<IdempotencyKey> existing = idempotencyRepository.findByKeyValue(eventId);
-        if (existing.isPresent()) {
-            return;
-        }
-
         // busca a transação
         Transaction transaction = transactionRepository.findByEndToEndId(endToEndId)
                 .orElseThrow(() -> new RuntimeException("Transaction not found for endToEndId: " + endToEndId));
+
+        Long walletId = transaction.getFromWallet().getId();
+
+        // Idempotência: se já existe, não preciso processar novamente
+        Optional<IdempotencyKey> existing = idempotencyRepository.findByWalletIdAndKeyValue(walletId, eventId);
+        if (existing.isPresent()) {
+            return;
+        }
 
         // Atualizamos os status com base no tipo do evento realizado
         if ("CONFIRMED".equalsIgnoreCase(eventType)) {
