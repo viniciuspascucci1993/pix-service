@@ -105,6 +105,8 @@ docker run --name pix-db -e
 
 mvn spring-boot:run
 
+---
+
 Author
 
 Vinícius Torres Pascucci
