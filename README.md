@@ -76,29 +76,32 @@ com.pixservice
 
 **Cabeçalhos obrigatórios:**
 
-**Exemplo de Requisição:**
-```json
+## Exemplo de Requisição
+
+**Request:**
+```
 {
   "fromWalletId": 1,
   "toPixKey": "user2@email.com",
   "amount": 150.00
 }
 
-**Response:**
-
 {
   "endToEndId": "E2E-1f2c-34a9-8bcd",
   "status": "PENDING"
 }
 
----
+```
 
-🧰 Executando Localmente
-🐘 Banco de Dados (PostgreSQL)
+## Executando Localmente
+## Banco de Dados (PostgreSQL)
 
-docker run --name pix-db -e POSTGRES_DB=pix_base -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5439:5432 -d postgres
+docker run --name pix-db -e 
+    POSTGRES_DB=pix_base -e 
+    POSTGRES_USER=postgres -e 
+    POSTGRES_PASSWORD=postgres -p 5439:5432 -d postgres
 
-Application
+## Application
 
 mvn spring-boot:run
 
