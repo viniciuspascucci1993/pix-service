@@ -14,3 +14,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  packages-to-scan: com.pixservice.infrastructure.web

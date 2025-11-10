@@ -2,12 +2,14 @@ package com.pixservice.infrastructure.web;
 
 import com.pixservice.application.dto.*;
 import com.pixservice.application.wallet.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 
+@Tag(name = "Carteiras", description = "Gerenciamento de carteiras e saldos")
 @RestController
 @RequestMapping(value = "/wallets")
 public class WalletController {

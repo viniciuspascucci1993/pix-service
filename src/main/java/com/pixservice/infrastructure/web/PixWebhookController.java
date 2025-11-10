@@ -1,6 +1,7 @@
 package com.pixservice.infrastructure.web;
 
 import com.pixservice.application.wallet.PixWebhookUseCase;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.Instant;
 import java.util.Map;
 
+@Tag(name = "PIX-WEBHOOK", description = "Operações de PIX-WEBHOOK")
 @RestController
 @RequestMapping(value = "/pix/webhook")
 public class PixWebhookController {
